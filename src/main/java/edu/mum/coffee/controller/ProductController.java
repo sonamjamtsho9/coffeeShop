@@ -1,10 +1,8 @@
 package edu.mum.coffee.controller;
 
-import java.net.URISyntaxException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,14 +25,9 @@ public class ProductController {
 	private ProductService productService;
 
 	@PostMapping(path = "/saveproduct")
-	public ResponseEntity<Product> saveProduct(@RequestBody Product product) throws URISyntaxException {
-		try {
-			productService.save(product);
-			return ResponseEntity.ok(product);
-		} catch (Exception e) {
-			// return Conflict (409)
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
-		}
+	public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
+		productService.save(product);
+		return ResponseEntity.ok(product);
 	}
 
 	@GetMapping(value = "/list")
@@ -45,28 +38,20 @@ public class ProductController {
 
 	@PutMapping(path = "/udpate/{productID}")
 	public ResponseEntity<Product> update(@RequestBody Product product, @PathVariable int productID) {
-		try {
-			if (product.getId() == productID) {
-				productService.save(product);
-				return ResponseEntity.ok(product);
-			} else {
-				return ResponseEntity.notFound().build();
-			}
-		} catch (Exception e) {
+		if (product.getId() == productID) {
+			productService.save(product);
+			return ResponseEntity.ok(product);
+		} else {
 			return ResponseEntity.notFound().build();
 		}
 	}
 
 	@DeleteMapping(path = "/delete/{productID}")
 	public ResponseEntity<Product> delete(@RequestBody Product product, @PathVariable int productID) {
-		try {
-			if (product.getId() == productID) {
-				productService.delete(product);
-				return ResponseEntity.ok(product);
-			} else {
-				return ResponseEntity.notFound().build();
-			}
-		} catch (Exception e) {
+		if (product.getId() == productID) {
+			productService.delete(product);
+			return ResponseEntity.ok(product);
+		} else {
 			return ResponseEntity.notFound().build();
 		}
 	}
