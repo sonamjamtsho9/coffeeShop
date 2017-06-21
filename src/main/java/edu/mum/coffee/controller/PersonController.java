@@ -1,9 +1,9 @@
 package edu.mum.coffee.controller;
 
-import java.net.URLDecoder;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,18 +25,24 @@ public class PersonController {
 	@Autowired
 	private PersonService personService;
 
-	@PostMapping(path = "/saveperson")
-	public ResponseEntity<Person> savePerson(@RequestBody Person person) {
+	@PostMapping(path = "/create")
+	public ResponseEntity<Person> createPerson(@RequestBody Person person) {
 		personService.savePerson(person);
 		return ResponseEntity.ok(person);
 	}
 
-	@GetMapping(path = "/list")
+	@GetMapping(path = "/byemail", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	@ResponseBody
 	public List<Person> getByEmail(@RequestParam("email") String email) {
-		String decodedEmail = URLDecoder.decode(email);
-		List<Person> person = personService.findByEmail(decodedEmail);
+		// String decodedEmail = URLDecoder.decode(email);
+		List<Person> person = personService.findByEmail(email);
 		return person;
+	}
+
+	@GetMapping(path = "/byID/{id}")
+	public ResponseEntity<Person> findPerson(@PathVariable long id) {
+		Person person = personService.findById(id);
+		return ResponseEntity.ok(person);
 	}
 
 	@PutMapping(path = "/saveperson/{id}")
@@ -50,4 +56,9 @@ public class PersonController {
 		}
 	}
 
+	@GetMapping(path = "/list")
+	public ResponseEntity<List<Person>> listAll() {
+		List<Person> list = personService.findAll();
+		return ResponseEntity.ok(list);
+	}
 }
